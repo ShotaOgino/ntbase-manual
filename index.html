@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NTBase 使い方マニュアル</title>
+<style>
+  :root {
+    --bg: #F6F7F4;
+    --surface: #FFFFFF;
+    --surface-2: #EFF2ED;
+    --ink: #1A2620;
+    --muted: #5B6A62;
+    --line: #DFE4DD;
+    --accent: #1E7A55;
+    --accent-soft: #E3F0E9;
+    --accent-ink: #FFFFFF;
+    --ball: #B8C426;
+    --warn: #A8441F;
+    --warn-bg: #FAEFE8;
+    --warn-line: #E8CDBF;
+    --shadow: 0 1px 2px rgba(26, 38, 32, 0.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0F1613;
+      --surface: #171F1B;
+      --surface-2: #1D2721;
+      --ink: #E7ECE8;
+      --muted: #97A69D;
+      --line: #283229;
+      --accent: #4CAF87;
+      --accent-soft: #1C2E26;
+      --accent-ink: #0F1613;
+      --ball: #D6E04A;
+      --warn: #E08B63;
+      --warn-bg: #291B13;
+      --warn-line: #45301F;
+      --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1613;
+    --surface: #171F1B;
+    --surface-2: #1D2721;
+    --ink: #E7ECE8;
+    --muted: #97A69D;
+    --line: #283229;
+    --accent: #4CAF87;
+    --accent-soft: #1C2E26;
+    --accent-ink: #0F1613;
+    --ball: #D6E04A;
+    --warn: #E08B63;
+    --warn-bg: #291B13;
+    --warn-line: #45301F;
+    --shadow: none;
+  }
+  :root[data-theme="light"] {
+    --bg: #F6F7F4;
+    --surface: #FFFFFF;
+    --surface-2: #EFF2ED;
+    --ink: #1A2620;
+    --muted: #5B6A62;
+    --line: #DFE4DD;
+    --accent: #1E7A55;
+    --accent-soft: #E3F0E9;
+    --accent-ink: #FFFFFF;
+    --ball: #B8C426;
+    --warn: #A8441F;
+    --warn-bg: #FAEFE8;
+    --warn-line: #E8CDBF;
+    --shadow: 0 1px 2px rgba(26, 38, 32, 0.05);
+  }
+  /* 白ベーススキン：右上のカラー切替で適用（ライト固定・ダークテーマでも白のまま） */
+  :root[data-skin="white"],
+  :root[data-skin="white"][data-theme="dark"],
+  :root[data-skin="white"][data-theme="light"] {
+    color-scheme: light;
+    --bg: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface-2: #F6F7F7;
+    --ink: #15181A;
+    --muted: #68727A;
+    --line: #E7E9EA;
+    --accent: #1E7A55;
+    --accent-soft: #EBF4F0;
+    --accent-ink: #FFFFFF;
+    --ball: #C0CB27;
+    --warn: #A8441F;
+    --warn-bg: #FBF2EB;
+    --warn-line: #EED8C9;
+    --shadow: 0 1px 3px rgba(21, 24, 26, 0.06);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; animation: none !important; }
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", Meiryo, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---------- header ---------- */
+  header.site {
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+  header.site .wrap {
+    padding-top: 52px;
+    padding-bottom: 44px;
+    position: relative;
+  }
+  .court {
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 340px;
+    height: auto;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+  }
+  .brand .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--ball);
+    display: inline-block;
+  }
+  h1 {
+    margin: 14px 0 10px;
+    font-size: clamp(26px, 5vw, 34px);
+    line-height: 1.35;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+  .lede {
+    margin: 0;
+    max-width: 34em;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  /* ---------- skin toggle (header 右上) ---------- */
+  .skin-toggle {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    z-index: 2;
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 2px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .skin-btn {
+    appearance: none;
+    border: none;
+    background: none;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    padding: 4px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .skin-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .skin-btn[aria-pressed="true"] {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  @media (max-width: 560px) {
+    .skin-toggle { top: 14px; right: 14px; }
+    .skin-btn { padding: 3px 10px; font-size: 11.5px; }
+  }
+
+  /* ---------- audience cards ---------- */
+  .audiences {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 28px 0 0;
+  }
+  @media (max-width: 640px) { .audiences { grid-template-columns: 1fr; } }
+  .aud-card {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    padding: 16px 18px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease;
+  }
+  .aud-card:hover, .aud-card:focus-visible { border-color: var(--accent); }
+  .aud-card strong { display: block; font-size: 15px; margin-bottom: 4px; }
+  .aud-card span { display: block; font-size: 12.5px; color: var(--muted); line-height: 1.7; }
+
+  /* ---------- tabs ---------- */
+  nav.tabs {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  nav.tabs .wrap {
+    display: flex;
+    gap: 4px;
+    padding-top: 10px;
+    padding-bottom: 0;
+  }
+  .tab {
+    appearance: none;
+    border: none;
+    background: none;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    padding: 10px 16px 12px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    border-radius: 6px 6px 0 0;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .tab[aria-selected="true"] {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ---------- panels & sections ---------- */
+  .panel .wrap { padding-top: 40px; padding-bottom: 64px; }
+  .panel[hidden] { display: none; }
+
+  section.block { margin: 0 0 44px; }
+  section.block:last-child { margin-bottom: 0; }
+
+  .kicker {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin: 0 0 4px;
+  }
+  h2 {
+    font-size: 21px;
+    font-weight: 800;
+    margin: 0 0 14px;
+    line-height: 1.5;
+    text-wrap: balance;
+  }
+  h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 26px 0 8px;
+  }
+  p { margin: 0 0 12px; max-width: 42em; }
+  .panel ul { margin: 0 0 12px; padding-left: 1.3em; }
+  .panel ul li { margin-bottom: 4px; }
+
+  /* steps */
+  ol.steps {
+    list-style: none;
+    counter-reset: step;
+    margin: 16px 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  ol.steps > li {
+    counter-increment: step;
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 13px 16px 13px 52px;
+    box-shadow: var(--shadow);
+  }
+  ol.steps > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 15px;
+    top: 14px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 12.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* tables */
+  .tablewrap { overflow-x: auto; margin: 14px 0; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 420px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  thead th {
+    background: var(--surface-2);
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  tbody tr:last-child th, tbody tr:last-child td { border-bottom: none; }
+  tbody th { font-weight: 700; white-space: nowrap; }
+  td { color: var(--ink); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* callouts */
+  .note, .warnbox {
+    border-radius: 10px;
+    padding: 13px 16px;
+    margin: 14px 0;
+    font-size: 14px;
+    max-width: 46em;
+  }
+  .note {
+    background: var(--accent-soft);
+    border: 1px solid transparent;
+  }
+  .note strong { color: var(--accent); }
+  .warnbox {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-line);
+    color: var(--ink);
+  }
+  .warnbox strong { color: var(--warn); }
+
+  /* chips */
+  .chip {
+    display: inline-block;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 1px 10px;
+    font-size: 12.5px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* FAQ */
+  details.faq {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    margin-bottom: 8px;
+    box-shadow: var(--shadow);
+  }
+  details.faq summary {
+    cursor: pointer;
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 14.5px;
+    list-style: none;
+    position: relative;
+    padding-right: 40px;
+  }
+  details.faq summary::-webkit-details-marker { display: none; }
+  details.faq summary::after {
+    content: "+";
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-size: 18px;
+    font-weight: 400;
+  }
+  details.faq[open] summary::after { content: "−"; }
+  details.faq summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 10px; }
+  details.faq .a {
+    padding: 0 16px 14px;
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 44em;
+  }
+
+  footer.site {
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+  footer.site .wrap { padding-top: 24px; padding-bottom: 40px; }
+
+  @media print {
+    nav.tabs { display: none; }
+    .panel[hidden] { display: block; }
+    .panel .wrap { padding-top: 16px; padding-bottom: 16px; }
+    .panel::before {
+      content: attr(data-print-title);
+      display: block;
+      font-size: 20px;
+      font-weight: 800;
+      max-width: 860px;
+      margin: 24px auto 0;
+      padding: 0 20px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="skin-toggle" role="group" aria-label="配色の切り替え">
+      <button class="skin-btn" type="button" data-skin-value="green" aria-pressed="true">グリーン</button>
+      <button class="skin-btn" type="button" data-skin-value="white" aria-pressed="false">ホワイト</button>
+    </div>
+    <svg class="court" viewBox="0 0 340 200" aria-hidden="true">
+      <g fill="none" stroke="var(--accent)" stroke-width="2" opacity="0.35">
+        <rect x="20" y="20" width="300" height="160" rx="2"/>
+        <line x1="20" y1="100" x2="320" y2="100"/>
+        <line x1="80" y1="20" x2="80" y2="180"/>
+        <line x1="260" y1="20" x2="260" y2="180"/>
+        <line x1="80" y1="60" x2="260" y2="60"/>
+        <line x1="80" y1="140" x2="260" y2="140"/>
+        <line x1="170" y1="60" x2="170" y2="140"/>
+      </g>
+      <circle cx="300" cy="44" r="7" fill="var(--ball)"/>
+    </svg>
+    <span class="brand"><span class="dot"></span>NTBase 公式ガイド</span>
+    <h1>NTBase 使い方マニュアル</h1>
+    <p class="lede">テニス・ピックルボールの試合動画を観る、大会チケット（PPV）を買う、選手を応援する。NTBase のすべての使い方をまとめました。</p>
+    <div class="audiences">
+      <a class="aud-card" href="#viewer" data-goto="viewer">
+        <strong>視聴者の方</strong>
+        <span>動画視聴・PPV購入・投げ銭（応援）・ランキング</span>
+      </a>
+      <a class="aud-card" href="#athlete" data-goto="athlete">
+        <strong>選手の方</strong>
+        <span>クラブ招待の承認・プロフィール・応援の受け取り・出金</span>
+      </a>
+      <a class="aud-card" href="#club" data-goto="club">
+        <strong>団体（クラブ）の方</strong>
+        <span>選手管理・大会作成・動画アップロード・売上と出金</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="対象者別ガイド">
+  <div class="wrap" role="tablist">
+    <button class="tab" role="tab" id="tab-viewer" aria-controls="viewer" aria-selected="true">視聴者向け</button>
+    <button class="tab" role="tab" id="tab-athlete" aria-controls="athlete" aria-selected="false">選手向け</button>
+    <button class="tab" role="tab" id="tab-club" aria-controls="club" aria-selected="false">団体向け</button>
+  </div>
+</nav>
+
+<!-- ============================================================ 視聴者 -->
+<main>
+<div class="panel" id="viewer" role="tabpanel" aria-labelledby="tab-viewer" data-print-title="視聴者向けガイド">
+  <div class="wrap">
+
+    <section class="block">
+      <p class="kicker">VIEWER GUIDE 01</p>
+      <h2>登録なしでもできること</h2>
+      <p>ホーム・動画一覧（テニス / ピックルボール / 人気 / 最新）・大会一覧・選手プロフィール・ランキング・検索は、ログインなしで自由に閲覧できます。</p>
+      <div class="note"><strong>無料の会員登録が必要な機能</strong>：PPV購入、投げ銭（応援）、マイリスト、視聴履歴、購入済みPPV、応援履歴、選手のフォロー、コメント投稿。</div>
+      <h3>よく出てくる用語</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>用語</th><th>意味</th></tr></thead>
+        <tbody>
+          <tr><th>PPV（ピーピーブイ）</th><td>大会ごとに購入する視聴チケットのこと（Pay Per View）。購入するとその大会の全試合が視聴できます</td></tr>
+          <tr><th>P（ポイント）</th><td>投げ銭に使う単位。1P = 1円です</td></tr>
+          <tr><th>投げ銭（応援）</th><td>好きな選手や団体にポイントを送って応援する機能。応援ランキングにも反映されます</td></tr>
+          <tr><th>マイリスト</th><td>気になる動画を保存しておく自分専用のリスト</td></tr>
+          <tr><th>大会（トーナメント）</th><td>試合動画のまとまり。動画の購入は大会単位で行います</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="block">
+      <p class="kicker">VIEWER GUIDE 02</p>
+      <h2>会員登録・ログイン</h2>
+      <ol class="steps">
+        <li>ログイン画面から「新規登録」へ。<strong>姓・名・メールアドレス・パスワード</strong>を入力し、利用規約に同意して登録します。パスワードは大文字・小文字・数字をすべて含めてください。</li>
+        <li>届いた<strong>認証メール</strong>のリンクをクリックして認証を完了します。認証が済むまでログインできません。</li>
+        <li>メールアドレスとパスワードでログイン。「ログイン情報を記憶する」で次回の入力を省略できます。</li>
+      </ol>
+      <p>パスワードを忘れたときは、ログイン画面の「パスワードをお忘れですか？」から再設定メールを受け取れます。リンクの期限が切れた場合は再送できます。</p>
+    </section>
+
+    <section class="block">
+      <p class="kicker">VIEWER GUIDE 03</p>
+      <h2>画面の見かた</h2>
+      <div class="tablewrap"><table>
+        <thead><tr><th>メニュー</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><th>ホーム</th><td>注目の大会バナー、大会から探す、動画セクション</td></tr>
+          <tr><th>ランキング</th><td>応援・視聴・大会成績のランキング（毎時更新）</td></tr>
+          <tr><th>視聴履歴</th><td>最近観た動画（要ログイン）</td></tr>
+          <tr><th>購入済みPPV</th><td>購入した大会の一覧（要ログイン）</td></tr>
+          <tr><th>応援履歴</th><td>投げ銭の履歴・領収書（要ログイン）</td></tr>
+        </tbody>
+      </table></div>
+      <p>スマートフォンでは下部ナビに <span class="chip">ホーム</span> <span class="chip">大会</span> <span class="chip">ランキング</span> <span class="chip">マイリスト</span> <span class="chip">マイページ</span> が並びます。表示言語は日本語 / 英語を切り替えられます。</p>
+    </section>
+
+    <section class="block">
+      <p class="kicker">VIEWER GUIDE 04</p>
+      <h2>動画を観る</h2>
+      <ul>
+        <li><strong>無料動画</strong>は「無料で視聴する」からそのまま再生できます。</li>
+        <li><strong>有料動画</strong>は「プレビューを見る」「トレーラーを見る」で一部を無料視聴できます。本編は大会のPPV購入後に視聴できます。</li>
+        <li>動画ページでは、マイリストへの追加、コメントの閲覧・投稿（いいね / 低評価）、関連動画の表示ができます。</li>
+        <li>観た動画は自動的に視聴履歴へ記録されます。</li>
+      </ul>
+    </section>
+
+    <section class="block">
+      <p class="kicker">VIEWER GUIDE 05</p>
+      <h2>PPV（大会チケット）を購入する</h2>
+      <p>有料コンテンツは<strong>大会単位の買い切り</strong>です。月額サブスクリプションはありません。<strong>購入すると、その大会の全試合が視聴可能になります。</strong></p>
+      <ol class="steps">
+        <li>マイページの支払い方法画面でクレジットカードを登録します（初回のみ）。セキュリティコード（CVV）は保存されません。</li>
+        <li>大会詳細ページ、または有料動画の「動画を購入する」から購入画面へ進みます。</li>
+        <li>「確認して支払う（○○円）」で決済。登録済みカードから支払われます。</li>
+        <li>購入後は「購入済みPPV」からいつでも視聴できます。同じ大会が二重に課金されることはありません。</li>
+      </ol>
+      <div class="warnbox"><strong>ご注意</strong>：ご利用いただける支払い方法はクレジットカードのみです（コンビニ払い・銀行振込には対応していません）。日本国外発行のカードはご利用いただけない場合があります。無料（0円）で公開されている大会もあります。</div>
+    </section>
+
+    <section class="block">
+      <p class="kicker">VIEWER GUIDE 06</p>
+      <h2>投げ銭（応援）する</h2>
+      <p>好きな選手や団体にポイント（1P = 1円）で応援を送れます。応援メッセージを添えることもできます（最大100文字）。</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>応援先</th><th>プリセット金額</th><th>金額の範囲</th></tr></thead>
+        <tbody>
+          <tr><th>選手</th><td class="num">100 / 500 / 1,000 / 5,000</td><td class="num">100P〜50,000P</td></tr>
+          <tr><th>団体（クラブ）</th><td class="num">100 / 500 / 1,000 / 3,000 / 5,000 / 10,000</td><td class="num">100P〜50,000P</td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li>表示名は <span class="chip">匿名のファン</span> <span class="chip">ログイン名</span> <span class="chip">ニックネーム</span> から選べます。</li>
+        <li>「応援履歴」から、取引ID・受取者着金額つきの<strong>領収書</strong>を表示できます。</li>
+      </ul>
+      <div class="warnbox"><strong>ご注意</strong>：販売者は NTBase（運営会社）です。所定の手数料を差し引いた金額が選手・団体に分配されます。<strong>決済完了後のキャンセル・返金はできません。</strong></div>
+    </section>
+
+    <section class="block">
+      <p class="kicker">VIEWER GUIDE 07</p>
+      <h2>よくある質問</h2>
+      <details class="faq"><summary>ログインできません</summary><div class="a">登録時の認証メールのリンクをクリックしたかご確認ください。メール認証が未完了の間はログインできません。</div></details>
+      <details class="faq"><summary>月額プランはありますか？</summary><div class="a">ありません。料金は大会ごとのPPV購入と、任意の投げ銭のみです。</div></details>
+      <details class="faq"><summary>動画を1本だけ購入できますか？</summary><div class="a">購入は大会単位です。購入するとその大会の全試合が視聴できます。</div></details>
+      <details class="faq"><summary>投げ銭を取り消したい</summary><div class="a">決済完了後のキャンセル・返金はできません。金額をよくご確認のうえご利用ください。</div></details>
+      <details class="faq"><summary>海外のクレジットカードは使えますか？</summary><div class="a">日本国外発行のカードはご利用いただけない場合があります。</div></details>
+      <details class="faq"><summary>登録したのに認証メールが届きません</summary><div class="a">まず迷惑メールフォルダをご確認ください。見つからない場合は、登録時のメールアドレスが間違っている可能性があります。正しいアドレスで再度登録をお試しください。</div></details>
+      <details class="faq"><summary>使える支払い方法は何ですか？</summary><div class="a">クレジットカードのみです。コンビニ払い・銀行振込には対応していません。</div></details>
+    </section>
+
+  </div>
+</div>
+
+<!-- ============================================================ 選手 -->
+<div class="panel" id="athlete" role="tabpanel" aria-labelledby="tab-athlete" hidden data-print-title="選手向けガイド">
+  <div class="wrap">
+
+    <section class="block">
+      <p class="kicker">ATHLETE GUIDE 01</p>
+      <h2>アカウントの始めかた</h2>
+      <h3>クラブからの招待で参加する（基本の流れ）</h3>
+      <ol class="steps">
+        <li>所属クラブから届く招待メールのリンクを開きます。<strong>招待リンクの有効期限は7日間</strong>です。</li>
+        <li>招待内容（<strong>所属申請</strong> または <strong>移籍オファー</strong>）を確認し、「承認する」または「拒否する」を選びます。</li>
+        <li>移籍オファーは<strong>承認から14日後に発効</strong>します。</li>
+      </ol>
+      <h3>自分で登録する</h3>
+      <p>登録画面から名前・メールアドレス・パスワードで登録できます。登録後に届く認証メールのリンクをクリックするとログインできるようになります。</p>
+    </section>
+
+    <section class="block">
+      <p class="kicker">ATHLETE GUIDE 02</p>
+      <h2>画面の見かた</h2>
+      <p>上部メニューは <span class="chip">動画一覧</span> <span class="chip">応援ダッシュボード</span> の2つです。</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>マイページのメニュー</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><th>プロフィール</th><td>公開プロフィールの編集</td></tr>
+          <tr><th>応援ダッシュボード</th><td>受け取った応援の確認</td></tr>
+          <tr><th>出金管理</th><td>振込先の設定・出金</td></tr>
+          <tr><th>通知設定</th><td>準備中</td></tr>
+          <tr><th>アカウント設定</th><td>メールアドレス変更・パスワード変更・退会</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="block">
+      <p class="kicker">ATHLETE GUIDE 03</p>
+      <h2>プロフィールを整える</h2>
+      <p>マイページの「プロフィール」から、表示名（公開）・自己紹介・所属クラブ・国籍・利き手・プロフィール写真・公開 / 非公開を設定できます。</p>
+      <div class="note"><strong>ヒント</strong>：プロフィールはファンが閲覧する公開ページに表示されます。写真と自己紹介を設定しておくと応援を受けやすくなります。</div>
+    </section>
+
+    <section class="block">
+      <p class="kicker">ATHLETE GUIDE 04</p>
+      <h2>出演動画を観る</h2>
+      <p>「動画一覧」に自分が出演している動画が表示されます。動画のアップロード・編集は所属クラブ側で行うため、掲載内容の修正はクラブの担当者にご連絡ください。</p>
+    </section>
+
+    <section class="block">
+      <p class="kicker">ATHLETE GUIDE 05</p>
+      <h2>応援（投げ銭）を受け取る</h2>
+      <div class="tablewrap"><table>
+        <thead><tr><th>ダッシュボードの項目</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><th>累計応援額</th><td>これまでに受け取った応援の合計</td></tr>
+          <tr><th>出金可能残高</th><td>出金できる金額</td></tr>
+          <tr><th>今月の分配予定額（選手直接分）</th><td>今月分配される予定の金額</td></tr>
+          <tr><th>応援者数（今月）</th><td>今月応援してくれた人数</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><strong>選手直接とクラブ受取</strong>：応援には2つの受取区分があります。出金可能残高に加算されるのは「選手直接」分のみで、「クラブ受取」分は所属クラブに分配されます。1件ずつの内訳は「応援明細」で確認できます。</div>
+    </section>
+
+    <section class="block">
+      <p class="kicker">ATHLETE GUIDE 06</p>
+      <h2>出金する</h2>
+      <ol class="steps">
+        <li>初回のみ「出金管理」から Stripe（決済代行）の口座登録を行います。Stripe アカウントを作成し、振込先の銀行口座を登録して連携完了。口座情報は Stripe が保持し、NTBase は保持しません。</li>
+        <li><strong>毎月15日に自動出金</strong>されます。手続きは不要です。</li>
+        <li>すぐに受け取りたい場合は「出金を申請する」から即時出金を申請できます。<strong>即時出金の場合のみ振込手数料がかかります。</strong></li>
+      </ol>
+      <p>出金状況は「出金申請済み / 処理中 / 送金手続完了」で確認できます。</p>
+    </section>
+
+    <section class="block">
+      <p class="kicker">ATHLETE GUIDE 07</p>
+      <h2>よくある質問</h2>
+      <details class="faq"><summary>招待メールのリンクが開けません</summary><div class="a">招待リンクの有効期限は7日間です。期限切れの場合はクラブの担当者に再送を依頼してください。</div></details>
+      <details class="faq"><summary>移籍を承認したのに反映されません</summary><div class="a">移籍は承認から14日後に発効します。</div></details>
+      <details class="faq"><summary>応援額と出金可能残高が一致しません</summary><div class="a">「クラブ受取」分はクラブに分配されるため、出金可能残高には「選手直接」分のみが加算されます。</div></details>
+      <details class="faq"><summary>自分の動画をアップロードしたい</summary><div class="a">動画の管理はクラブ（団体）アカウントで行います。所属クラブにご相談ください。</div></details>
+    </section>
+
+  </div>
+</div>
+
+<!-- ============================================================ 団体 -->
+<div class="panel" id="club" role="tabpanel" aria-labelledby="tab-club" hidden data-print-title="団体（クラブ）向けガイド">
+  <div class="wrap">
+
+    <section class="block">
+      <p class="kicker">CLUB GUIDE 01</p>
+      <h2>団体登録・ログイン</h2>
+      <ol class="steps">
+        <li>登録画面で、団体名・メールアドレス（ログイン用）・電話番号（任意）・管理者の姓名・パスワード（<strong>大文字・小文字・数字を含む8文字以上</strong>）・競技（<span class="chip">テニス</span> <span class="chip">ピックルボール</span> <span class="chip">両方</span>）を入力し、利用規約に同意します。</li>
+        <li>届いた認証メールのリンクをクリックすると、ログインできるようになります（認証メールはログイン画面から再送できます）。</li>
+        <li>ログイン後のダッシュボードで、団体情報・所属選手数・出金用口座（Stripe）の連携状況を確認できます。</li>
+      </ol>
+      <p>メニューは <span class="chip">ダッシュボード</span> <span class="chip">メンバー</span> <span class="chip">大会管理</span> <span class="chip">動画管理</span> <span class="chip">出金管理</span> <span class="chip">団体設定</span> です。管理画面は日本語のみの対応です。</p>
+    </section>
+
+    <section class="block">
+      <p class="kicker">CLUB GUIDE 02</p>
+      <h2>選手（メンバー）を管理する</h2>
+      <h3>選手を個別に作成する</h3>
+      <p>「選手を作成する」から、ニックネーム・生年月日・性別・主な戦績・活動期間・プロフィール画像・SNSリンク（X / Instagram / YouTube）を登録します。</p>
+      <h3>メールで招待する</h3>
+      <p>選手のメールアドレスに招待を送信できます。ステータスは「招待済み / 参加済み」で管理され、「招待再送」も可能です。招待リンクの有効期限は<strong>7日間</strong>です。登録済みの選手は「選手検索」から探して所属申請・移籍オファーを送れます（移籍は選手の承認から14日後に発効）。</p>
+      <h3>CSVで一括登録する</h3>
+      <ul>
+        <li>ファイル制限：<strong>10MB以下・ファイル名50文字以内・拡張子 .csv</strong></li>
+        <li>形式：ヘッダー行必須、メールアドレス形式、性別は male / female / other、日付は YYYY-MM-DD</li>
+      </ul>
+      <p>「所属選手別集計」では、選手ごとの応援総額・選手直接分・クラブ受取分・応援件数を確認できます。</p>
+    </section>
+
+    <section class="block">
+      <p class="kicker">CLUB GUIDE 03</p>
+      <h2>大会を作成・管理する</h2>
+      <p>「大会管理」→「大会作成」から、大会名・説明・開催期間・開催地・レベル・ランキング対象・<strong>PPV価格</strong>・バナー画像（横長 / モバイル用）・大会ロゴ・スポンサーロゴを設定します。</p>
+      <ul>
+        <li>PPV価格を <strong>0円</strong> に設定すると無料公開になります。</li>
+        <li>大会ごとに売上の受取先を <span class="chip">クラブ受取</span> / <span class="chip">選手直接</span> から設定します。投げ銭・売上の分配先がこの設定で変わります。</li>
+        <li>PPV価格を設定した大会は、視聴者が大会単位で購入すると全試合を視聴できるようになります。</li>
+      </ul>
+    </section>
+
+    <section class="block">
+      <p class="kicker">CLUB GUIDE 04</p>
+      <h2>動画をアップロード・管理する</h2>
+      <p>「動画管理」から、タイトル・説明・サムネイル（横 / 縦型）・プレビュー動画・本編動画・試合形式（シングルス / ダブルス など）・ジャンル・紐づける大会・出演選手・公開設定（公開 / 非公開 / 限定公開）を登録します。</p>
+      <ul>
+        <li>サムネイル等の<strong>画像は2MB以下</strong>。動画は配信基盤（Mux）にアップロードされ、処理に時間がかかる場合があります。</li>
+        <li>プレビュー動画を設定すると、未購入の視聴者も一部を無料で観られるため、PPV購入の導線になります。</li>
+        <li>出演選手を設定すると、選手アプリの動画一覧や選手の公開プロフィールに表示されます。</li>
+      </ul>
+    </section>
+
+    <section class="block">
+      <p class="kicker">CLUB GUIDE 05</p>
+      <h2>売上・出金を管理する</h2>
+      <div class="tablewrap"><table>
+        <thead><tr><th>項目</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><th>PPV売上</th><td>大会PPVの売上合計</td></tr>
+          <tr><th>投げ銭受取</th><td>クラブ受取分の投げ銭合計</td></tr>
+          <tr><th>手数料合計</th><td>プラットフォーム手数料（<strong class="num">PPV 30% / 投げ銭 15%</strong>）</td></tr>
+          <tr><th>着金額</th><td>手数料差引後の受取額</td></tr>
+        </tbody>
+      </table></div>
+      <ol class="steps">
+        <li>初回のみ、Stripe（決済代行）で出金用口座を連携します。口座情報は Stripe が保持します。</li>
+        <li><strong>毎月15日に自動出金</strong>されます。すぐに受け取りたい場合は手動で出金申請できます。</li>
+        <li>取引明細はCSVでエクスポートできます。出金ステータスは「未申請 / 精算中 / 申請済み / 送金完了」です。</li>
+      </ol>
+    </section>
+
+    <section class="block">
+      <p class="kicker">CLUB GUIDE 06</p>
+      <h2>団体設定</h2>
+      <p>「団体設定」から、団体名・紹介文・電話番号・管理者の姓名・メールアドレス・Instagramリンク・クラブ写真を変更できます。</p>
+    </section>
+
+    <section class="block">
+      <p class="kicker">CLUB GUIDE 07</p>
+      <h2>よくある質問</h2>
+      <details class="faq"><summary>選手に招待メールが届いていないようです</summary><div class="a">「メンバー」ページから「招待再送」ができます。招待リンクの有効期限は7日間です。</div></details>
+      <details class="faq"><summary>手数料はいくらですか？</summary><div class="a">PPV売上の30%、投げ銭の15%がプラットフォーム手数料です。差引後の着金額は「出金管理」で確認できます。</div></details>
+      <details class="faq"><summary>大会を無料で公開できますか？</summary><div class="a">できます。PPV価格を0円に設定してください。</div></details>
+      <details class="faq"><summary>動画がアップロードできません</summary><div class="a">サムネイル画像は2MB以下にしてください。動画本体の処理には時間がかかる場合があります。</div></details>
+    </section>
+
+  </div>
+</div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <p>NTBase 使い方マニュアル ／ 2026年9月11日 更新 ／ 記載の金額・手数料・機能は更新日時点のものです。最新の情報はサービス内の表示をご確認ください。</p>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+    var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+
+    function activate(id, scroll) {
+      tabs.forEach(function (t) {
+        var on = t.getAttribute('aria-controls') === id;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      panels.forEach(function (p) {
+        if (p.id === id) { p.removeAttribute('hidden'); }
+        else { p.setAttribute('hidden', ''); }
+      });
+      if (scroll) {
+        var nav = document.querySelector('nav.tabs');
+        if (nav) { nav.scrollIntoView(); }
+      }
+    }
+
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () {
+        activate(t.getAttribute('aria-controls'), false);
+        if (history.replaceState) {
+          history.replaceState(null, '', '#' + t.getAttribute('aria-controls'));
+        }
+      });
+      t.addEventListener('keydown', function (e) {
+        var i = tabs.indexOf(t);
+        if (e.key === 'ArrowRight') { tabs[(i + 1) % tabs.length].focus(); }
+        if (e.key === 'ArrowLeft') { tabs[(i - 1 + tabs.length) % tabs.length].focus(); }
+      });
+    });
+
+    Array.prototype.slice.call(document.querySelectorAll('[data-goto]')).forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        activate(a.getAttribute('data-goto'), true);
+        if (history.replaceState) {
+          history.replaceState(null, '', '#' + a.getAttribute('data-goto'));
+        }
+      });
+    });
+
+    var skinBtns = Array.prototype.slice.call(document.querySelectorAll('.skin-btn'));
+    function setSkin(v) {
+      if (v === 'white') { document.documentElement.setAttribute('data-skin', 'white'); }
+      else { document.documentElement.removeAttribute('data-skin'); }
+      skinBtns.forEach(function (b) {
+        b.setAttribute('aria-pressed', b.getAttribute('data-skin-value') === v ? 'true' : 'false');
+      });
+      try { localStorage.setItem('ntbase-manual-skin', v); } catch (err) {}
+    }
+    skinBtns.forEach(function (b) {
+      b.addEventListener('click', function () { setSkin(b.getAttribute('data-skin-value')); });
+    });
+    var savedSkin = null;
+    try { savedSkin = localStorage.getItem('ntbase-manual-skin'); } catch (err) {}
+    if (savedSkin === 'white') { setSkin('white'); }
+
+    var hash = (location.hash || '').replace('#', '');
+    if (hash === 'viewer' || hash === 'athlete' || hash === 'club') { activate(hash, false); }
+  })();
+</script>
+</body>
+</html>
