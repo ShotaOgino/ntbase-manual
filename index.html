@@ -195,12 +195,13 @@
   @media (max-width: 560px) {
     .skin-toggle { top: 14px; right: 14px; }
     .skin-btn { padding: 3px 10px; font-size: 11.5px; }
+    .tab { padding: 10px 9px 12px; font-size: 12.5px; }
   }
 
   /* ---------- audience cards ---------- */
   .audiences {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     margin: 28px 0 0;
   }
@@ -475,6 +476,10 @@
         <strong>団体（クラブ）の方</strong>
         <span>選手管理・大会作成・動画アップロード・売上と出金</span>
       </a>
+      <a class="aud-card" href="#organizer" data-goto="organizer">
+        <strong>大会事業者の方</strong>
+        <span>PPV販売で新しい収益・収益の仕組み・始め方5ステップ</span>
+      </a>
     </div>
   </div>
 </header>
@@ -484,6 +489,7 @@
     <button class="tab" role="tab" id="tab-viewer" aria-controls="viewer" aria-selected="true">視聴者向け</button>
     <button class="tab" role="tab" id="tab-athlete" aria-controls="athlete" aria-selected="false">選手向け</button>
     <button class="tab" role="tab" id="tab-club" aria-controls="club" aria-selected="false">団体向け</button>
+    <button class="tab" role="tab" id="tab-organizer" aria-controls="organizer" aria-selected="false">大会事業者向け</button>
   </div>
 </nav>
 
@@ -766,6 +772,73 @@
 
   </div>
 </div>
+
+<!-- ============================================================ 大会事業者 -->
+<div class="panel" id="organizer" role="tabpanel" aria-labelledby="tab-organizer" hidden data-print-title="大会事業者向けガイド">
+  <div class="wrap">
+
+    <section class="block">
+      <p class="kicker">ORGANIZER GUIDE 01</p>
+      <h2>NTBase でできること — 大会に「配信収益」という新しい柱を</h2>
+      <p>これまで大会の収益は、参加費や協賛が中心でした。NTBase に大会を掲載すると、<strong>試合動画そのものが収益源になります。</strong></p>
+      <ul>
+        <li><strong>PPV 販売</strong>：大会単位の視聴チケットを販売できます。価格は自由に設定でき、0円の無料公開も可能です。</li>
+        <li><strong>投げ銭（応援）</strong>：ファンから選手・団体への応援（1P = 1円）を受け取れます。受取先（クラブ受取 / 選手直接）は大会ごとに設定します。</li>
+        <li><strong>露出</strong>：注目大会はホームのバナーに掲載されます。ランキング対象に設定すると、大会成績がランキングに反映されます。</li>
+      </ul>
+    </section>
+
+    <section class="block">
+      <p class="kicker">ORGANIZER GUIDE 02</p>
+      <h2>収益の仕組み</h2>
+      <div class="tablewrap"><table>
+        <thead><tr><th>収益源</th><th>手数料</th><th>受け取り</th></tr></thead>
+        <tbody>
+          <tr><th>PPV 売上</th><td class="num">30%</td><td class="num">70% が着金</td></tr>
+          <tr><th>投げ銭（クラブ受取分）</th><td class="num">15%</td><td class="num">85% が着金</td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li><strong>登録・大会掲載に費用はかかりません。</strong>費用は売上から差し引かれる手数料のみです。</li>
+        <li>視聴者への販売・決済（クレジットカード）は NTBase が販売者として代行します。</li>
+        <li>売上は<strong>毎月15日に自動出金</strong>されます（Stripe 経由。即時出金の申請も可能、その場合のみ振込手数料あり）。</li>
+      </ul>
+    </section>
+
+    <section class="block">
+      <p class="kicker">ORGANIZER GUIDE 03</p>
+      <h2>始めるまでの流れ（5ステップ）</h2>
+      <ol class="steps">
+        <li><strong>団体アカウントを登録</strong>：大会事業者の方も「団体」として登録します（競技：テニス / ピックルボール / 両方。メール認証あり）。</li>
+        <li><strong>選手を登録・招待</strong>：CSV での一括登録も可能です。</li>
+        <li><strong>大会を作成し PPV 価格を設定</strong>：バナー・大会ロゴ・スポンサーロゴを掲載できます。</li>
+        <li><strong>試合動画をアップロード</strong>：プレビュー動画を設定すると、未購入の視聴者に見どころを見せられ、購入の導線になります。</li>
+        <li><strong>売上を確認して出金</strong>：毎月15日の自動出金、または手動での出金申請。</li>
+      </ol>
+      <p>各画面の詳しい操作方法は「団体向け」タブをご覧ください。</p>
+    </section>
+
+    <section class="block">
+      <p class="kicker">ORGANIZER GUIDE 04</p>
+      <h2>収益を伸ばすポイント</h2>
+      <ul>
+        <li><strong>プレビュー動画を設定する</strong>：未購入者が試合の一部を無料で観られるため、PPV 購入につながりやすくなります。</li>
+        <li><strong>出演選手を設定する</strong>：選手の公開プロフィールや選手アプリに動画が表示され、選手のファンからの視聴・投げ銭の導線になります。</li>
+        <li><strong>スポンサーロゴを掲載する</strong>：大会ページにスポンサーロゴを載せられるため、協賛営業の材料になります。</li>
+      </ul>
+    </section>
+
+    <section class="block">
+      <p class="kicker">ORGANIZER GUIDE 05</p>
+      <h2>よくある質問</h2>
+      <details class="faq"><summary>費用はかかりますか？</summary><div class="a">登録・大会掲載は無料です。費用は売上から差し引かれる手数料（PPV 30% / 投げ銭 15%）のみです。</div></details>
+      <details class="faq"><summary>クラブではなく大会運営会社でも使えますか？</summary><div class="a">はい。「団体」アカウントとして登録してご利用いただけます。</div></details>
+      <details class="faq"><summary>視聴者への課金・決済対応は誰が行いますか？</summary><div class="a">NTBase が販売者として決済（クレジットカード）を代行します。手数料差引後の金額が着金します。</div></details>
+      <details class="faq"><summary>売上はいつ受け取れますか？</summary><div class="a">毎月15日に自動出金されます。すぐに受け取りたい場合は即時出金も申請できます（振込手数料あり）。</div></details>
+    </section>
+
+  </div>
+</div>
 </main>
 
 <footer class="site">
@@ -835,7 +908,7 @@
     if (savedSkin === 'white') { setSkin('white'); }
 
     var hash = (location.hash || '').replace('#', '');
-    if (hash === 'viewer' || hash === 'athlete' || hash === 'club') { activate(hash, false); }
+    if (hash === 'viewer' || hash === 'athlete' || hash === 'club' || hash === 'organizer') { activate(hash, false); }
   })();
 </script>
 </body>
